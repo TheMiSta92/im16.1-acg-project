@@ -3,6 +3,8 @@
  */
 'use strict';
 
+// TODO: Search for "TODO" and do it
+
 var gl = null;
 const camera = {
   rotation: {
@@ -13,7 +15,6 @@ const camera = {
 
 //scene graph nodes
 var root = null;
-var rootnofloor = null;
 var rotateLight;
 var rotateNode;
 
@@ -31,10 +32,13 @@ var framebufferHeight = 512;
 loadResources({
   vs: 'shader/texture.vs.glsl',
   fs: 'shader/texture.fs.glsl',
-  vs_single: 'shader/single.vs.glsl',
-  fs_single: 'shader/single.fs.glsl',
-  texture_diffuse: 'models/wood.png',
-  model: 'models/C-3PO.obj'
+  vs_debug_light: 'shader/debugLight.vs.glsl',
+  fs_debug_light: 'shader/debugLight.fs.glsl',
+  model_pond_stone1: 'models/pond/stone1.obj',
+  model_pond_stone2: 'models/pond/stone2.obj',
+  model_pond_stone3: 'models/pond/stone3.obj',
+  model_pond_stone4: 'models/pond/stone4.obj',
+  model_pond_stone5: 'models/pond/stone5.obj'
 }).then(function (resources /*an object containing our keys with the loaded resources*/) {
   init(resources);
 
@@ -49,10 +53,7 @@ function init(resources) {
 
   //create scenegraph
   root = createSceneGraph(gl, resources);
-
-  //create scenegraph without floor and simple shader
-  rootnofloor = new ShaderSGNode(createProgram(gl, resources.vs_single, resources.fs_single));
-  rootnofloor.append(rotateNode); //reuse model part
+  root.append(createPond(gl, resources));
 
   initInteraction(gl.canvas);
 }
@@ -63,84 +64,89 @@ function createSceneGraph(gl, resources) {
 
   //light debug helper function
   function createLightSphere() {
-    return new ShaderSGNode(createProgram(gl, resources.vs_single, resources.fs_single), [
+    return new ShaderSGNode(createProgram(gl, resources.vs_debug_light, resources.fs_debug_light), [
       new RenderSGNode(makeSphere(.2,10,10))
     ]);
   }
 
-  {
-    //initialize light
-    let light = new LightSGNode(); //use now framework implementation of light node
-    light.ambient = [0.2, 0.2, 0.2, 1];
-    light.diffuse = [0.8, 0.8, 0.8, 1];
-    light.specular = [1, 1, 1, 1];
-    light.position = [0, 0, 0];
+  //initialize light
+  let light = new LightSGNode(); //use now framework implementation of light node
+  light.ambient = [0.2, 0.2, 0.2, 1];
+  light.diffuse = [0.8, 0.8, 0.8, 1];
+  light.specular = [1, 1, 1, 1];
+  light.position = [0, 0, 0];
 
-    rotateLight = new TransformationSGNode(mat4.create());
-    let translateLight = new TransformationSGNode(glm.translate(0,2,2)); //translating the light is the same as setting the light position
+  rotateLight = new TransformationSGNode(mat4.create());
+  let translateLight = new TransformationSGNode(glm.translate(0,2,2)); //translating the light is the same as setting the light position
 
-    rotateLight.append(translateLight);
-    translateLight.append(light);
-    translateLight.append(createLightSphere()); //add sphere for debugging: since we use 0,0,0 as our light position the sphere is at the same position as the light source
-    root.append(rotateLight);
-  }
-
-  {
-    //initialize C3PO
-    let c3po = new MaterialSGNode([ //use now framework implementation of material node
-      new RenderSGNode(resources.model)
-    ]);
-    //gold
-    c3po.ambient = [0.24725, 0.1995, 0.0745, 1];
-    c3po.diffuse = [0.75164, 0.60648, 0.22648, 1];
-    c3po.specular = [0.628281, 0.555802, 0.366065, 1];
-    c3po.shininess = 0.4;
-
-    rotateNode = new TransformationSGNode(mat4.create(), [
-      new TransformationSGNode(glm.transform({ translate: [0,0, 0], rotateX : 0, scale: 0.5 }),  [
-        c3po
-      ])
-    ]);
-    root.append(rotateNode);
-  }
-
-  {
-    //initialize floor
-
-    let floor = new MaterialSGNode(
-                      new RenderSGNode(makeFloor())
-                );
-
-    //dark
-    floor.ambient = [0, 0, 0, 1];
-    floor.diffuse = [0.1, 0.5, 0.1, 1];
-    floor.specular = [0.5, 0.5, 0.5, 1];
-    floor.shininess = 50.0;
-
-    root.append(new TransformationSGNode(glm.transform({ translate: [0,0,0], rotateX: -90, scale: 1}), [
-      floor
-    ]));
-  }
-
+  rotateLight.append(translateLight);
+  translateLight.append(light);
+  translateLight.append(createLightSphere()); //add sphere for debugging: since we use 0,0,0 as our light position the sphere is at the same position as the light source
+  root.append(rotateLight);
 
   return root;
 }
 
+function createPond(gl, resources) {
+  const pondScene = new ShaderSGNode(createProgram(gl, resources.vs, resources.fs));
 
-function makeFloor() {
-  var width = 2;
-  var height = 2;
-  var position = [-width, -height, 0,   width, -height, 0,   width, height, 0,   -width, height, 0];
-  var normal = [0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1];
-  var texturecoordinates = [0, 0,   2, 0,   2, 2,   0, 2];
-  //var texturecoordinates = [0, 0,   5, 0,   5, 5,   0, 5];
-  var index = [0, 1, 2,   2, 3, 0];
-  return {
-    position: position,
-    normal: normal,
-    texture: texturecoordinates,
-    index: index
-  };
+  // initializing the different stones
+  let stone1 = new MaterialSGNode([
+    new RenderSGNode(resources.model_pond_stone1)
+  ]);
+  let stone2 = new MaterialSGNode([
+    new RenderSGNode(resources.model_pond_stone2)
+  ]);
+  let stone3 = new MaterialSGNode([
+    new RenderSGNode(resources.model_pond_stone3)
+  ]);
+  let stone4 = new MaterialSGNode([
+    new RenderSGNode(resources.model_pond_stone4)
+  ]);
+  let stone5 = new MaterialSGNode([
+    new RenderSGNode(resources.model_pond_stone5)
+  ]);
+
+  // TODO: apply texture instead of simple material
+  stone1.ambient = [0.5, 0.5, 0.5, 1.];
+  stone1.diffuse = [0.6, 0.6, 0.6, 1.];
+  stone1.specular = [1., 1., 1., 1.];
+  stone1.shininess = 50.;
+  stone2.ambient = stone1.ambient;
+  stone2.diffuse = stone1.diffuse;
+  stone2.specular = stone1.specular;
+  stone2.shininess = stone1.shininess;
+  stone3.ambient = stone1.ambient;
+  stone3.diffuse = stone1.diffuse;
+  stone3.specular = stone1.specular;
+  stone3.shininess = stone1.shininess;
+  stone4.ambient = stone1.ambient;
+  stone4.diffuse = stone1.diffuse;
+  stone4.specular = stone1.specular;
+  stone4.shininess = stone1.shininess;
+  stone5.ambient = stone1.ambient;
+  stone5.diffuse = stone1.diffuse;
+  stone5.specular = stone1.specular;
+  stone5.shininess = stone1.shininess;
+
+  // set stones
+  pondScene.append(new TransformationSGNode(glm.transform({ translate: [0., 0., 0.], rotateY: 0, scale: 0.2 }), [
+      stone1
+  ]));
+  pondScene.append(new TransformationSGNode(glm.transform({ translate: [1., 0., 0.], rotateY: 0, scale: 0.2 }), [
+      stone2
+  ]));
+  pondScene.append(new TransformationSGNode(glm.transform({ translate: [2., 0., 0.], rotateY: 0, scale: 0.2 }), [
+      stone3
+  ]));
+  pondScene.append(new TransformationSGNode(glm.transform({ translate: [3., 0., 0.], rotateY: 0, scale: 0.2 }), [
+      stone4
+  ]));
+  pondScene.append(new TransformationSGNode(glm.transform({ translate: [4., 0., 0.], rotateY: 0, scale: 0.2 }), [
+      stone5
+  ]));
+
+  return pondScene;
 }
 
 
@@ -165,7 +171,6 @@ function render(timeInMilliseconds) {
   //update animations
   context.timeInMilliseconds = timeInMilliseconds;
 
-  rotateNode.matrix = glm.rotateY(timeInMilliseconds*-0.01);
   rotateLight.matrix = glm.rotateY(timeInMilliseconds*0.05);
 
   //render scenegraph
