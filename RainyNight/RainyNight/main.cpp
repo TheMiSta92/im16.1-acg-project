@@ -23,7 +23,7 @@
 #include <learnopengl/filesystem.h>
 
 // Properties
-GLuint screenWidth = 800, screenHeight = 600;
+GLuint screenWidth = 1280, screenHeight = 720;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
