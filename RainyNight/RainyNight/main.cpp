@@ -75,7 +75,7 @@ int main()
 	Shader shaderTexture(FileSystem::getPath("resources/shader/texture.vs").c_str(), FileSystem::getPath("resources/shader/texture.frag").c_str());
 
 	// Load models
-	Model modelTerrain(FileSystem::getPath("resources/objects/terrain/terrain.obj").c_str());
+	Model modelGuy(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
 
 
 	// Game loop
@@ -108,7 +108,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		modelTerrain.Draw(shaderTexture);
+		modelGuy.Draw(shaderTexture);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
