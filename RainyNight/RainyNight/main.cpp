@@ -72,13 +72,11 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup and compile our shaders
-	Shader shader(FileSystem::getPath("resources/shader/shader.vs").c_str(), FileSystem::getPath("resources/shader/shader.frag").c_str());
+	Shader shaderTexture(FileSystem::getPath("resources/shader/texture.vs").c_str(), FileSystem::getPath("resources/shader/texture.frag").c_str());
 
 	// Load models
-	Model ourModel(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
+	Model modelTerrain(FileSystem::getPath("resources/objects/terrain/terrain.obj").c_str());
 
-	// Draw in wireframe
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -96,19 +94,21 @@ int main()
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.Use();   // <-- Don't forget this one!
-						// Transformation matrices
+		// Init Shaders
+		shaderTexture.Use();   
+
+		// Camera
 		glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 		// Draw the loaded model
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		ourModel.Draw(shader);
+		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		modelTerrain.Draw(shaderTexture);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
