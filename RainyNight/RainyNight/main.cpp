@@ -72,7 +72,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup and compile our shaders
-	Shader shader("shader.vs", "shader.frag");
+	Shader shader(FileSystem::getPath("resources/shader/shader.vs").c_str(), FileSystem::getPath("resources/shader/shader.frag").c_str());
 
 	// Load models
 	Model ourModel(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());

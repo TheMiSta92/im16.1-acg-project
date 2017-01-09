@@ -1,2 +1,13 @@
-﻿  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight\Debug\RainyNight.exe
+﻿  main.cpp
+d:\clouds\git\im16.1-acg-project\include\learnopengl\shader.h(63): warning C4101: 'infoLog': unreferenced local variable
+d:\clouds\git\im16.1-acg-project\include\learnopengl\shader.h(62): warning C4101: 'success': unreferenced local variable
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(87): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(153): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(154): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(158): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(159): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(161): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(162): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\main.cpp(169): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight\Debug\RainyNight.exe
   RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight\Debug\RainyNight.pdb (Partial PDB)
