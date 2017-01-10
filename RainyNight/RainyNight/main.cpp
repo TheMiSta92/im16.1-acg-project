@@ -50,7 +50,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr); // Windowed
+	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Rainy Night", nullptr, nullptr); // Windowed
 	glfwMakeContextCurrent(window);
 
 	// Set the required callback functions
@@ -76,6 +76,7 @@ int main()
 
 	// Load models
 	Model modelGuy(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
+	Model modelGuy2(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
 
 
 	// Game loop
@@ -103,12 +104,19 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-		// Draw the loaded model
+		// Draw Guy
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		modelGuy.Draw(shaderTexture);
+
+		// Draw 2nd Guy
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(3.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
+		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		modelGuy2.Draw(shaderTexture);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
