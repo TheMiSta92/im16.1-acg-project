@@ -25,14 +25,25 @@
 // Properties
 GLuint screenWidth = 1280, screenHeight = 720;
 
-// Function prototypes
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void Do_Movement();
+#pragma region Function Declarations
+void keyHandler(GLFWwindow* window, int key, int scancode, int action, int mode);
+#pragma region Camera
+void doScriptedCameraMovement();
+void moveCameraTo(glm::vec3 position);
+void lookCameraHorizontal(float angle);
+void updateCamera();
+#pragma endregion
+#pragma region Shader
+Shader loadShader(string filename);
+#pragma endregion
+#pragma region Models
+Model loadModel(string path);
+void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+#pragma endregion
+#pragma endregion
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -40,7 +51,7 @@ bool firstMouse = true;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
-// The MAIN function, from here we start our application and run our Game loop
+
 int main()
 {
 	// Init GLFW
@@ -53,10 +64,8 @@ int main()
 	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Rainy Night", nullptr, nullptr); // Windowed
 	glfwMakeContextCurrent(window);
 
-	// Set the required callback functions
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	// Set callback functions
+	glfwSetKeyCallback(window, keyHandler);
 
 	// Options
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -65,18 +74,18 @@ int main()
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-	// Define the viewport dimensions
+	// Define viewport
 	glViewport(0, 0, screenWidth, screenHeight);
 
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-	// Setup and compile our shaders
-	Shader shaderTexture(FileSystem::getPath("resources/shader/texture.vs").c_str(), FileSystem::getPath("resources/shader/texture.frag").c_str());
+	// Setup and compile shaders
+	Shader shaderTexture = loadShader("texture");
 
 	// Load models
-	Model modelGuy(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
-	Model modelGuy2(FileSystem::getPath("resources/objects/nanosuit/nanosuit.obj").c_str());
+	Model modelGuy = loadModel("resources/objects/nanosuit/nanosuit.obj");
+	Model modelHouse = loadModel("resources/objects/house/Farmhouse.obj");
 
 
 	// Game loop
@@ -89,7 +98,6 @@ int main()
 
 		// Check and call events
 		glfwPollEvents();
-		Do_Movement();
 
 		// Clear the colorbuffer
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
@@ -99,24 +107,14 @@ int main()
 		shaderTexture.Use();   
 
 		// Camera
+		doScriptedCameraMovement();
 		glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-		// Draw Guy
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		modelGuy.Draw(shaderTexture);
-
-		// Draw 2nd Guy
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(3.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		modelGuy2.Draw(shaderTexture);
+		// Draw House
+		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -126,24 +124,63 @@ int main()
 	return 0;
 }
 
-#pragma region "User input"
-
-// Moves/alters the camera positions based on user input
-void Do_Movement()
-{
-	// Camera controls
-	if (keys[GLFW_KEY_W])
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (keys[GLFW_KEY_S])
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (keys[GLFW_KEY_A])
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (keys[GLFW_KEY_D])
-		camera.ProcessKeyboard(RIGHT, deltaTime);
+#pragma region Camera Management
+// Scripted Camera Movement
+void doScriptedCameraMovement() {
+	if (lastFrame >= 5.0f) {
+		//moveCameraTo(glm::vec3(0.0f, 1.0f, 5.0f));
+		lookCameraHorizontal(-20.0f);
+		updateCamera();
+	}
 }
 
+// Moves the camera to a certain point in the scene
+void moveCameraTo(glm::vec3 position) {
+	camera.Position = position;
+}
+
+// Sets the horizontal rotation of the camera (left-angle < 0 < right-angle)
+void lookCameraHorizontal(float angle) {
+	camera.Yaw = -90.0f + angle;
+}
+
+// Updates the camera with the new set parameters
+void updateCamera() {
+	camera.updateCameraVectors();
+}
+#pragma endregion
+
+#pragma region Shader Management
+// Loads Shader
+Shader loadShader(string filename) {
+	Shader shader(FileSystem::getPath("resources/shader/" + filename + ".vs").c_str(), FileSystem::getPath("resources/shader/" + filename + ".frag").c_str());
+	return shader;
+}
+#pragma endregion
+
+#pragma region Model Management
+// Loads model
+Model loadModel(string path) {
+	Model model(FileSystem::getPath(path).c_str());
+	return model;
+}
+
+// Draws model
+void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+	glm::mat4 location = glm::mat4();
+	location = glm::translate(location, position);
+	location = glm::scale(location, scale);
+	location = glm::rotate(location, rotation.x * 3.1415924f / 180.0f, glm::vec3(1, 0, 0));
+	location = glm::rotate(location, rotation.y * 3.1415924f / 180.0f, glm::vec3(0, 1, 0));
+	location = glm::rotate(location, rotation.z * 3.1415924f / 180.0f, glm::vec3(0, 0, 1));
+	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(location));
+	model.Draw(shader);
+}
+#pragma endregion
+
+#pragma region User input
 // Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void keyHandler(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -153,28 +190,4 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (action == GLFW_RELEASE)
 		keys[key] = false;
 }
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	GLfloat xoffset = xpos - lastX;
-	GLfloat yoffset = lastY - ypos;
-
-	lastX = xpos;
-	lastY = ypos;
-
-	camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	camera.ProcessMouseScroll(yoffset);
-}
-
 #pragma endregion
