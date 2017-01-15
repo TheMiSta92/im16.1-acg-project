@@ -86,9 +86,7 @@ int main()
 	Shader shaderTexture = loadShader("texture");
 
 	// Load models
-	Model modelGuy = loadModel("resources/objects/nanosuit/nanosuit.obj");
 	Model modelHouse = loadModel("resources/objects/house/Farmhouse.obj");
-
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -106,7 +104,7 @@ int main()
 		glfwPollEvents();
 
 		// Clear the colorbuffer
-		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Init Shaders
