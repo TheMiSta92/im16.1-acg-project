@@ -14,6 +14,7 @@
 #include <learnopengl/model.h>
 
 // GLM Mathemtics
+#define M_PI 3.14159265358979323846f 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -87,6 +88,7 @@ int main()
 
 	// Load models
 	Model modelHouse = loadModel("resources/objects/house/Farmhouse.obj");
+	Model modelRock = loadModel("resources/objects/rock/rock.obj");
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -117,8 +119,10 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-		// Draw House
+		// Draw Models
 		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -201,9 +205,9 @@ void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotatio
 	glm::mat4 location = glm::mat4();
 	location = glm::translate(location, position);
 	location = glm::scale(location, scale);
-	location = glm::rotate(location, rotation.x * 3.1415924f / 180.0f, glm::vec3(1, 0, 0));
-	location = glm::rotate(location, rotation.y * 3.1415924f / 180.0f, glm::vec3(0, 1, 0));
-	location = glm::rotate(location, rotation.z * 3.1415924f / 180.0f, glm::vec3(0, 0, 1));
+	location = glm::rotate(location, rotation.x * M_PI / 180.0f, glm::vec3(1, 0, 0));
+	location = glm::rotate(location, rotation.y * M_PI / 180.0f, glm::vec3(0, 1, 0));
+	location = glm::rotate(location, rotation.z * M_PI / 180.0f, glm::vec3(0, 0, 1));
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(location));
 	model.Draw(shader);
 }
