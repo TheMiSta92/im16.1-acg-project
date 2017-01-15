@@ -28,9 +28,11 @@ GLuint screenWidth = 1280, screenHeight = 720;
 #pragma region Function Declarations
 void keyHandler(GLFWwindow* window, int key, int scancode, int action, int mode);
 #pragma region Camera
-void doScriptedCameraMovement();
+void doScriptedCameraMovement(GLfloat currentFrame);
 void moveCameraTo(glm::vec3 position);
 void lookCameraHorizontal(float angle);
+void lookCameraVertical(float angle);
+void cameraRide(float currentTime, float startTime, glm::vec3 startPosition, float startRotationHorizontal, float startRotationVertical, float endTime, glm::vec3 endPosition, float endRotationHorizontal, float endRotationVertical);
 void updateCamera();
 #pragma endregion
 #pragma region Shader
@@ -96,6 +98,10 @@ int main()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		// FPS
+		float fps = 1.0f / deltaTime;
+		cout << fps << " FPS" << endl;
+
 		// Check and call events
 		glfwPollEvents();
 
@@ -107,7 +113,7 @@ int main()
 		shaderTexture.Use();   
 
 		// Camera
-		doScriptedCameraMovement();
+		doScriptedCameraMovement(currentFrame);
 		glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -126,12 +132,9 @@ int main()
 
 #pragma region Camera Management
 // Scripted Camera Movement
-void doScriptedCameraMovement() {
-	if (lastFrame >= 5.0f) {
-		//moveCameraTo(glm::vec3(0.0f, 1.0f, 5.0f));
-		lookCameraHorizontal(-20.0f);
-		updateCamera();
-	}
+void doScriptedCameraMovement(GLfloat currentFrame) {
+	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 10.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f);
+	cameraRide(currentFrame, 12.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f, 20.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
 }
 
 // Moves the camera to a certain point in the scene
@@ -142,6 +145,36 @@ void moveCameraTo(glm::vec3 position) {
 // Sets the horizontal rotation of the camera (left-angle < 0 < right-angle)
 void lookCameraHorizontal(float angle) {
 	camera.Yaw = -90.0f + angle;
+}
+
+// Sets the vertical rotation of the camera (down-angle < 0 < up-angle)
+void lookCameraVertical(float angle) {
+	camera.Pitch = angle;
+}
+
+// Performs a camera ride
+void cameraRide(float currentTime, float startTime, glm::vec3 startPosition, float startRotationHorizontal, float startRotationVertical, float endTime, glm::vec3 endPosition, float endRotationHorizontal, float endRotationVertical) {
+	if (currentTime >= startTime && currentTime <= endTime) {
+		float currentAnimationTime = currentTime - startTime;
+
+		// position
+		glm::vec3 animationPosition = glm::vec3();
+		animationPosition.x = (endPosition.x - startPosition.x) / (endTime - startTime) * currentAnimationTime + startPosition.x;
+		animationPosition.y = (endPosition.y - startPosition.y) / (endTime - startTime) * currentAnimationTime + startPosition.y;
+		animationPosition.z = (endPosition.z - startPosition.z) / (endTime - startTime) * currentAnimationTime + startPosition.z;
+		moveCameraTo(animationPosition);
+
+		// rotation horizontal
+		float animationRotationHorizontal = (endRotationHorizontal - startRotationHorizontal) / (endTime - startTime) * currentAnimationTime + startRotationHorizontal;
+		lookCameraHorizontal(animationRotationHorizontal);
+
+		// rotation vertical
+		float animationRotationVertical = (endRotationVertical - startRotationVertical) / (endTime - startTime) * currentAnimationTime + startRotationVertical;
+		lookCameraVertical(animationRotationVertical);
+
+		// update
+		updateCamera();
+	}
 }
 
 // Updates the camera with the new set parameters
