@@ -19,6 +19,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// Effects
+#include "RainSystem.h"
+
 // Other Libs
 #include <SOIL.h>
 #include <learnopengl/filesystem.h>
@@ -50,6 +53,8 @@ Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
+glm::mat4 projectionMatrix = glm::mat4();
+glm::mat4 viewMatrix = glm::mat4();
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -85,10 +90,14 @@ int main()
 
 	// Setup and compile shaders
 	Shader shaderTexture = loadShader("texture");
+	Shader shaderRain = loadShader("rain");
 
 	// Load models
 	Model modelHouse = loadModel("resources/objects/house/Farmhouse.obj");
 	Model modelRock = loadModel("resources/objects/rock/rock.obj");
+
+	// Initalize RainSystem
+	RainSystem *rainSystem = new RainSystem();
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -109,20 +118,21 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Init Shaders
-		shaderTexture.Use();   
-
 		// Camera
 		doScriptedCameraMovement(currentFrame);
-		glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(shaderTexture.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-
+		projectionMatrix = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+		viewMatrix = camera.GetViewMatrix();
+	
 		// Draw Models
+		shaderTexture.Use();
 		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+
+		// RainSystem
+		shaderRain.Use();
+		rainSystem->updateParticles(deltaTime);
+		rainSystem->drawParticles(shaderRain, projectionMatrix, viewMatrix);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -202,6 +212,8 @@ Model loadModel(string path) {
 
 // Draws model
 void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glm::mat4 location = glm::mat4();
 	location = glm::translate(location, position);
 	location = glm::scale(location, scale);
