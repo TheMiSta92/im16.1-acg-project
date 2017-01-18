@@ -109,7 +109,7 @@ int main()
 
 		// FPS
 		float fps = 1.0f / deltaTime;
-		cout << fps << " FPS" << endl;
+		//cout << fps << " FPS" << endl;
 
 		// Check and call events
 		glfwPollEvents();
@@ -145,8 +145,12 @@ int main()
 #pragma region Camera Management
 // Scripted Camera Movement
 void doScriptedCameraMovement(GLfloat currentFrame) {
-	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 10.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f);
-	cameraRide(currentFrame, 12.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f, 20.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
+	//cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 10.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f);
+	//cameraRide(currentFrame, 12.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f, 20.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
+	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 6.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 90.0f);
+	cameraRide(currentFrame, 6.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 90.0f, 8.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, -90.0f);
+	cameraRide(currentFrame, 8.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, -90.0f, 9.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
+	cameraRide(currentFrame, 9.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 13.0f, glm::vec3(0.0f, 0.0f, 5.0f), 360.0f, 0.0f);
 }
 
 // Moves the camera to a certain point in the scene

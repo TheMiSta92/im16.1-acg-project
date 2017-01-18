@@ -16,89 +16,162 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Parameters
-const GLfloat START_Y = 3.0f;
+const GLfloat START_XZ_MIN = -10.0f;
+const GLfloat START_XZ_DIFF_MAX = 20.0f;
+const GLfloat START_Y_MIN = 3.0f;
+const GLfloat START_Y_DIFF_MAX = 2.0f;
 const GLfloat END_Y = -1.0f;
 const GLfloat VELOCITY = 2.0f;
+const GLuint PRECISION = 10000;
+const GLuint PARTICLES_AMOUNT = 5000;
 
 // Particles
-GLuint max_particles = 5000;
-std::vector<Particle> particles;	//Array
+std::vector<GLfloat> positions;
+GLuint vertex_buffer_id;
+GLuint positions_buffer_id;
 
 RainSystem::RainSystem() {
-	// Fill array with empty/dead/default particles for faster check of free particle array spaces
-	for (GLuint i = 0; i < max_particles; i++) {
-		particles.push_back(Particle());
+	// Fill array with particles
+	for (GLuint particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
+		positions.push_back(generateRandomXZInRange());	// x
+		positions.push_back(generateRandomYInRange());	// y
+		positions.push_back(generateRandomXZInRange());	// z
 	}
-}
-
-// Replaces dead particles and emitts new ones
-void RainSystem::emittingParticles() {
-	GLuint maxAmountNewParticles = 10;
-	// Adding new particles
-	for (GLuint i = 0; i < maxAmountNewParticles; i++) {
-		int deadParticleIndex = getFirstDeadParticle();
-		// Checks if there is a dead particle, then respawn it
-		if (deadParticleIndex != -1) {
-			renewParticle(particles[deadParticleIndex]);
-		}
-		else {
-			return;
-		}
-	}
+	bindData();
 }
 
 // Updating all particles in array every frame
 void RainSystem::updateParticles(float deltaTime) {
-	for (GLuint i = 0; i < max_particles; i++) {
-		// Pointer Nachverfolgung
-		Particle &p = particles[i];
-		if (p.Position.y > END_Y) {
+	for (GLuint particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
+		if (positions[getArrayIdxOfParticleIdxForY(particleIdx)] > END_Y) {
 			// Particle haven't reached the end position yet
-			p.Position.y -= p.Velocity * deltaTime;
+			positions[getArrayIdxOfParticleIdxForY(particleIdx)] -= VELOCITY * deltaTime;	// v * t = distance
+		}
+		else {
+			// Particle is below minimum height
+			// Respawn
+			renewParticle(particleIdx);
 		}
 	}
-	// 8-)
-	emittingParticles();
-}
-
-// Returns first dead particle from array
-// If no dead particle found -> returns -1
-int RainSystem::getFirstDeadParticle() {
-	for (GLuint i = 0; i < max_particles; i++) {
-		if (particles[i].Position.y <= END_Y) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-// Reactivates dead particle
-// "Emitter"
-void RainSystem::renewParticle(Particle &particle) {
-	particle.Position.x = (rand() % 1000) / 1000.0f * 50.0f - 25.0f;
-	particle.Position.y = START_Y + (rand() % 50000) / 10000.0f;
-	particle.Position.z = (rand() % 1000) / 1000.0f * 50.0f - 25.0f;
-	particle.Velocity = VELOCITY;
+	//emittingParticles();
 }
 
 // Draw the particles
 void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
-	for (Particle particle : particles) {
-		if (particle.Position.y > END_Y) {
-			//std::cout << "Regen da" << std::endl;
-			GLint vertexPositionLocation = glGetUniformLocation(shader.Program, "position");
-			glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-			glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-			// TODO: Bind particle.Position to location = 0 | GET HELP
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)offsetof(Particle, Position));
-			glEnableVertexAttribArray(0);
-		}
-		else {
-			//std::cout << "Regen weg" << std::endl;
-		}
-	}
+	// Uniforms
+	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+
+	// 0th buffer - vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+	// 1st buffer - position of particle
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, positions_buffer_id);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+	// Vertex Divisor
+	glVertexAttribDivisor(0, 0);
+	glVertexAttribDivisor(1, 1);
+	
+	// Draw
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, PARTICLES_AMOUNT);
 }
 
-RainSystem::~RainSystem()
-{
+// Destroy RainSystem
+RainSystem::~RainSystem() {
+	for (int particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
+		positions[getArrayIdxOfParticleIdxForX(particleIdx)] = 0;
+		positions[getArrayIdxOfParticleIdxForY(particleIdx)] = 0;
+		positions[getArrayIdxOfParticleIdxForZ(particleIdx)] = 0;
+	}
+	positions.clear();
+}
+
+// Replaces dead particles and emitts new ones
+//void RainSystem::emittingParticles() {
+//	GLuint maxAmountNewParticles = 10;
+	// Adding new particles
+//	for (GLuint i = 0; i < maxAmountNewParticles; i++) {
+//		int deadParticleIndex = getFirstDeadParticle();
+		// Checks if there is a dead particle, then respawn it
+//		if (deadParticleIndex != -1) {
+//			renewParticle(deadParticleIndex);
+//		}
+//		else {
+//			return;
+//		}
+//	}
+//}
+
+// Returns first dead particle from array
+// If no dead particle found -> returns -1
+//int RainSystem::getFirstDeadParticle() {
+//	for (GLuint particleIdx = 0; particleIdx < max_particles; particleIdx++) {
+//		if (getArrayIdxOfParticleIdxForY(particleIdx) <= END_Y) {
+//			return particleIdx;
+//		}
+//	}
+//	return -1;
+//}
+
+// Binds data
+void RainSystem::bindData() {
+	// Vertices of rain-drops
+	static const GLfloat vertex_buffer_data[] = {
+		-0.1f, -0.3f, 0.0f,
+		0.1f, -0.3f, 0.0f,
+		-0.1f, 0.3f, 0.0f,
+		0.1f, 0.3f, 0.0f
+	};
+
+	// Vertices buffer
+	glGenBuffers(1, &vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STATIC_DRAW);
+
+	// Positions buffer
+	glGenBuffers(1, &positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, positions_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, PARTICLES_AMOUNT * 3 * sizeof(GLfloat), positions.data(), GL_STREAM_DRAW);
+}
+
+// Reactivates dead particle
+// "Emitter"
+void RainSystem::renewParticle(int particleIndex) {
+	positions[getArrayIdxOfParticleIdxForX(particleIndex)] = generateRandomXZInRange();
+	positions[getArrayIdxOfParticleIdxForY(particleIndex)] = generateRandomYInRange();
+	positions[getArrayIdxOfParticleIdxForZ(particleIndex)] = generateRandomXZInRange();
+}
+
+// Returns a random number between 0 and 1
+GLfloat RainSystem::randomBetween0And1() {
+	return (rand() % PRECISION) / (PRECISION * 1.0f);
+}
+
+// Returns to array-index for the x-position of a certain particle
+int RainSystem::getArrayIdxOfParticleIdxForX(int particleIdx) {
+	return particleIdx * 3;
+}
+
+// Returns to array-index for the y-position of a certain particle
+int RainSystem::getArrayIdxOfParticleIdxForY(int particleIdx) {
+	return particleIdx * 3 + 1;
+}
+
+// Returns to array-index for the z-position of a certain particle
+int RainSystem::getArrayIdxOfParticleIdxForZ(int particleIdx) {
+	return particleIdx * 3 + 2;
+}
+
+// Generates a random position which is suitable for X- and Z-position
+GLfloat RainSystem::generateRandomXZInRange() {
+	return START_XZ_MIN + randomBetween0And1() * START_XZ_DIFF_MAX;
+}
+
+// Generates a random position which is suitable for Y-position
+GLfloat RainSystem::generateRandomYInRange() {
+	return START_Y_MIN + randomBetween0And1() * START_Y_DIFF_MAX;
 }
