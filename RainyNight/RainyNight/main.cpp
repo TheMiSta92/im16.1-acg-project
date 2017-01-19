@@ -50,7 +50,7 @@ void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotatio
 #pragma endregion
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+Camera camera(glm::vec3(0.0f, 2.0f, 10.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -90,6 +90,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup and compile shaders
+	Shader shaderSimpleGreen = loadShader("simple_green");
 	Shader shaderTexture = loadShader("texture");
 	Shader shaderRain = loadShader("rain");
 
@@ -129,11 +130,12 @@ int main()
 		viewMatrix = camera.GetViewMatrix();
 	
 		// Draw Models
+		shaderSimpleGreen.Use();
+		drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		shaderTexture.Use();
-		drawModel(modelTerrain, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5.0f, 5.0f, 5.0f));
-		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
 
 
 		// RainSystem
@@ -154,10 +156,10 @@ int main()
 void doScriptedCameraMovement(GLfloat currentFrame) {
 	//cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 10.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f);
 	//cameraRide(currentFrame, 12.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f, 20.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
-	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 6.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 90.0f);
-	cameraRide(currentFrame, 6.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 90.0f, 8.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, -90.0f);
-	cameraRide(currentFrame, 8.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, -90.0f, 9.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
-	cameraRide(currentFrame, 9.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 13.0f, glm::vec3(0.0f, 0.0f, 5.0f), 360.0f, 0.0f);
+	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f, 6.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 90.0f);
+	cameraRide(currentFrame, 6.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 90.0f, 8.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, -90.0f);
+	cameraRide(currentFrame, 8.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, -90.0f, 9.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f);
+	cameraRide(currentFrame, 9.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f, 13.0f, glm::vec3(0.0f, 2.0f, 10.0f), 360.0f, 0.0f);
 }
 
 // Moves the camera to a certain point in the scene
