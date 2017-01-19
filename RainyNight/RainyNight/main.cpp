@@ -98,7 +98,7 @@ int main()
 	// Load models
 	Model modelHouse = loadModel("resources/objects/house/Farmhouse.obj");
 	Model modelRock = loadModel("resources/objects/rock/rock.obj");
-	Model modelTerrain = loadModel("resources/terrain/terrain.fbx");
+	Model modelTerrain = loadModel("resources/objects/terrain/terrain.fbx");
 
 	// Initialize RainSystem
 	RainSystem *rainSystem = new RainSystem();
@@ -131,9 +131,8 @@ int main()
 		viewMatrix = camera.GetViewMatrix();
 	
 		// Draw Models
-		shaderSimpleGreen.Use();
-		drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		shaderTexture.Use();
+		drawModel(modelTerrain, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
