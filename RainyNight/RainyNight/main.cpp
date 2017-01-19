@@ -91,6 +91,7 @@ int main()
 
 	// Setup and compile shaders
 	Shader shaderSimpleGreen = loadShader("simple_green");
+	Shader shaderSimpleBlue = loadShader("simple_blue");
 	Shader shaderTexture = loadShader("texture");
 	Shader shaderRain = loadShader("rain");
 
@@ -137,11 +138,14 @@ int main()
 		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
 		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
 
+		// AnimatedWaterSystem
+		shaderSimpleBlue.Use();
+		animatedWaterSystem->drawWater(shaderSimpleBlue, projectionMatrix, viewMatrix);
 
 		// RainSystem
 		shaderRain.Use();
 		rainSystem->updateParticles(deltaTime);
-		rainSystem->drawParticles(shaderRain, projectionMatrix, viewMatrix);
+		rainSystem->drawParticles(shaderSimpleBlue, projectionMatrix, viewMatrix);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
