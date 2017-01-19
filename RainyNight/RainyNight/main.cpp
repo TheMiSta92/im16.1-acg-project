@@ -50,7 +50,7 @@ void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotatio
 #pragma endregion
 
 // Camera
-Camera camera(glm::vec3(0.0f, 2.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -106,6 +106,9 @@ int main()
 	// Initialize AnimatedWater
 	AnimatedWaterSystem *animatedWaterSystem = new AnimatedWaterSystem();
 
+	// Make Water Swing
+	animatedWaterSystem->startSwinging(0, 0);
+
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -122,7 +125,7 @@ int main()
 		glfwPollEvents();
 
 		// Clear the colorbuffer
-		glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Camera
@@ -131,14 +134,31 @@ int main()
 		viewMatrix = camera.GetViewMatrix();
 	
 		// Draw Models
+		shaderSimpleGreen.Use();
+		drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		shaderTexture.Use();
-		drawModel(modelTerrain, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
-		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, -0.02f, 0.0f), glm::vec3(0.0f, 200.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, -0.03f, 2.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, -0.03f, 2.5f), glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+
+		// Pond
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.05f, -1.1f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.08f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.25f, -0.045f, -1.2f), glm::vec3(0.0f, 130.0f, 5.0f), glm::vec3(0.09f, 0.09f, 0.09f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.03f, -1.15f), glm::vec3(30.0f, 170.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-1.88f, -0.03f, -1.05f), glm::vec3(10.0f, 70.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-1.82f, -0.03f, -0.9f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.037f, -0.72f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.04f, -0.50f), glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-1.85f, -0.045f, -0.30f), glm::vec3(0.0f, 210.0f, 0.0f), glm::vec3(0.065f, 0.065f, 0.065f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.035f, -0.28f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.09f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.15f, -0.03f, -0.32f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.3f, -0.025f, -0.5f), glm::vec3(0.0f, 60.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.03f, -0.7f), glm::vec3(0.0f, 150.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.07f));
+		drawModel(modelRock, shaderTexture, glm::vec3(-2.52f, -0.01f, -0.95f), glm::vec3(0.0f, 250.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
 
 		// AnimatedWaterSystem
 		shaderSimpleBlue.Use();
+		animatedWaterSystem->updateSwinging(deltaTime);
 		animatedWaterSystem->drawWater(shaderSimpleBlue, projectionMatrix, viewMatrix);
 
 		// RainSystem
@@ -157,12 +177,17 @@ int main()
 #pragma region Camera Management
 // Scripted Camera Movement
 void doScriptedCameraMovement(GLfloat currentFrame) {
-	//cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f, 10.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f);
-	//cameraRide(currentFrame, 12.0f, glm::vec3(5.0f, 2.0f, 4.0f), -20.0f, -20.0f, 20.0f, glm::vec3(0.0f, 0.0f, 5.0f), 0.0f, 0.0f);
-	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f, 6.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 90.0f);
-	cameraRide(currentFrame, 6.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 90.0f, 8.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, -90.0f);
-	cameraRide(currentFrame, 8.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, -90.0f, 9.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f);
-	cameraRide(currentFrame, 9.0f, glm::vec3(0.0f, 2.0f, 10.0f), 0.0f, 0.0f, 13.0f, glm::vec3(0.0f, 2.0f, 10.0f), 360.0f, 0.0f);
+	cameraRide(currentFrame, 0.0f, glm::vec3(0.0f, 0.3f, 5.0f), 10.0f, 0.0f, 5.0f, glm::vec3(0.0f, 0.3f, 5.0f), 10.0f, 0.0f);				// init look
+	cameraRide(currentFrame, 5.0f, glm::vec3(0.0f, 0.3f, 5.0f), 10.0f, 0.0f, 10.0f, glm::vec3(1.5f, 0.3f, 3.0f), -40.0f, -5.0f);			// go to the right of the rock
+	cameraRide(currentFrame, 10.0f, glm::vec3(1.5f, 0.3f, 3.0f), -40.0f, -5.0f, 11.0f, glm::vec3(1.5f, 0.3f, 2.5f), -30.0f, -2.5f);			// house side
+	cameraRide(currentFrame, 11.0f, glm::vec3(1.5f, 0.3f, 2.5f), -30.0f, -2.5f, 12.0f, glm::vec3(1.5f, 0.3f, 2.0f), -20.0f, 0.0f);			// house side
+	cameraRide(currentFrame, 12.0f, glm::vec3(1.5f, 0.3f, 2.0f), -20.0f, 0.0f, 14.0f, glm::vec3(1.5f, 0.3f, 1.0f), -20.0f, 0.0f);			// house side
+	cameraRide(currentFrame, 14.0f, glm::vec3(1.5f, 0.3f, 1.0f), -20.0f, 0.0f, 16.0f, glm::vec3(1.5f, 0.3f, 0.0f), -40.0f, 0.0f);			// house side
+	cameraRide(currentFrame, 16.0f, glm::vec3(1.5f, 0.3f, 0.0f), -40.0f, 0.0f, 21.0f, glm::vec3(0.5f, 0.3f, -2.5f), -140.0f, 0.0f);			// house back corner
+	cameraRide(currentFrame, 21.0f, glm::vec3(0.5f, 0.3f, -2.5f), -140.0f, 0.0f, 26.0f, glm::vec3(-1.5f, 0.3f, -2.0f), -210.0f, 0.0f);		// house other back corner
+	cameraRide(currentFrame, 26.0f, glm::vec3(-1.5f, 0.3f, -2.0f), -210.0, 0.0f, 28.0f, glm::vec3(-2.0f, 0.3f, -1.8f), -160.0f, -20.0f);	// to the pond
+	cameraRide(currentFrame, 28.0f, glm::vec3(-2.0f, 0.3f, -1.8f), -160.0, -20.0f, 30.0f, glm::vec3(-2.0f, 0.3f, -1.8f), -180.0f, -10.0f);	// pond-look around
+	cameraRide(currentFrame, 30.0f, glm::vec3(-2.0f, 0.3f, -1.8f), -180.0, -10.0f, 32.0f, glm::vec3(-2.0f, 0.3f, -1.8f), -170.0f, -15.0f);	// pond-look around
 }
 
 // Moves the camera to a certain point in the scene
