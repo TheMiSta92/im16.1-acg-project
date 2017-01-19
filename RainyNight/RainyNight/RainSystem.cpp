@@ -46,6 +46,11 @@ void RainSystem::updateParticles(float deltaTime) {
 		if (RS_positions[getArrayIdxOfParticleIdxForY(particleIdx)] > END_Y) {
 			// Particle haven't reached the end position yet
 			RS_positions[getArrayIdxOfParticleIdxForY(particleIdx)] -= VELOCITY * deltaTime;	// v * t = distance
+
+			// showing that it's working
+			if (particleIdx == 0) {
+				std::cout << "Rain-Drop #0: y = " << RS_positions[getArrayIdxOfParticleIdxForY(0)] << std::endl;
+			}
 		}
 		else {
 			// Particle is below minimum height
