@@ -1,0 +1,6 @@
+﻿  AnimatedWaterSystem.cpp
+d:\clouds\git\im16.1-acg-project\include\learnopengl\shader.h(63): warning C4101: 'infoLog': unreferenced local variable
+d:\clouds\git\im16.1-acg-project\include\learnopengl\shader.h(62): warning C4101: 'success': unreferenced local variable
+d:\clouds\git\im16.1-acg-project\rainynight\rainynight\animatedwatersystem.cpp(42): warning C4018: '<': signed/unsigned mismatch
+  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight\Debug\RainyNight.exe
+  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight\Debug\RainyNight.pdb (Partial PDB)

@@ -21,6 +21,7 @@
 
 // Effects
 #include "RainSystem.h"
+#include "AnimatedWaterSystem.h"
 
 // Other Libs
 #include <SOIL.h>
@@ -97,8 +98,11 @@ int main()
 	Model modelRock = loadModel("resources/objects/rock/rock.obj");
 	Model modelTerrain = loadModel("resources/terrain/terrain.fbx");
 
-	// Initalize RainSystem
+	// Initialize RainSystem
 	RainSystem *rainSystem = new RainSystem();
+
+	// Initialize AnimatedWater
+	AnimatedWaterSystem *animatedWaterSystem = new AnimatedWaterSystem();
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))

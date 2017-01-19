@@ -117,10 +117,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatedWaterSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RainSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatedWaterSystem.h" />
     <ClInclude Include="RainSystem.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

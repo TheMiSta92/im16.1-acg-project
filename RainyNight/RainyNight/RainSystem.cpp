@@ -26,16 +26,16 @@ const GLuint PRECISION = 10000;
 const GLuint PARTICLES_AMOUNT = 5000;
 
 // Particles
-std::vector<GLfloat> positions;
-GLuint vertex_buffer_id;
-GLuint positions_buffer_id;
+std::vector<GLfloat> RS_positions;
+GLuint RS_vertex_buffer_id;
+GLuint RS_positions_buffer_id;
 
 RainSystem::RainSystem() {
 	// Fill array with particles
 	for (GLuint particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
-		positions.push_back(generateRandomXZInRange());	// x
-		positions.push_back(generateRandomYInRange());	// y
-		positions.push_back(generateRandomXZInRange());	// z
+		RS_positions.push_back(generateRandomXZInRange());	// x
+		RS_positions.push_back(generateRandomYInRange());	// y
+		RS_positions.push_back(generateRandomXZInRange());	// z
 	}
 	bindData();
 }
@@ -43,9 +43,9 @@ RainSystem::RainSystem() {
 // Updating all particles in array every frame
 void RainSystem::updateParticles(float deltaTime) {
 	for (GLuint particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
-		if (positions[getArrayIdxOfParticleIdxForY(particleIdx)] > END_Y) {
+		if (RS_positions[getArrayIdxOfParticleIdxForY(particleIdx)] > END_Y) {
 			// Particle haven't reached the end position yet
-			positions[getArrayIdxOfParticleIdxForY(particleIdx)] -= VELOCITY * deltaTime;	// v * t = distance
+			RS_positions[getArrayIdxOfParticleIdxForY(particleIdx)] -= VELOCITY * deltaTime;	// v * t = distance
 		}
 		else {
 			// Particle is below minimum height
@@ -64,12 +64,12 @@ void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::m
 
 	// 0th buffer - vertices
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_vertex_buffer_id);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
 	// 1st buffer - position of particle
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_positions_buffer_id);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 
 	// Vertex Divisor
@@ -83,11 +83,11 @@ void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::m
 // Destroy RainSystem
 RainSystem::~RainSystem() {
 	for (int particleIdx = 0; particleIdx < PARTICLES_AMOUNT; particleIdx++) {
-		positions[getArrayIdxOfParticleIdxForX(particleIdx)] = 0;
-		positions[getArrayIdxOfParticleIdxForY(particleIdx)] = 0;
-		positions[getArrayIdxOfParticleIdxForZ(particleIdx)] = 0;
+		RS_positions[getArrayIdxOfParticleIdxForX(particleIdx)] = 0;
+		RS_positions[getArrayIdxOfParticleIdxForY(particleIdx)] = 0;
+		RS_positions[getArrayIdxOfParticleIdxForZ(particleIdx)] = 0;
 	}
-	positions.clear();
+	RS_positions.clear();
 }
 
 // Replaces dead particles and emitts new ones
@@ -128,22 +128,22 @@ void RainSystem::bindData() {
 	};
 
 	// Vertices buffer
-	glGenBuffers(1, &vertex_buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+	glGenBuffers(1, &RS_vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_vertex_buffer_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data, GL_STATIC_DRAW);
 
 	// Positions buffer
-	glGenBuffers(1, &positions_buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, positions_buffer_id);
-	glBufferData(GL_ARRAY_BUFFER, PARTICLES_AMOUNT * 3 * sizeof(GLfloat), positions.data(), GL_STREAM_DRAW);
+	glGenBuffers(1, &RS_positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_positions_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, PARTICLES_AMOUNT * 3 * sizeof(GLfloat), RS_positions.data(), GL_STREAM_DRAW);
 }
 
 // Reactivates dead particle
 // "Emitter"
 void RainSystem::renewParticle(int particleIndex) {
-	positions[getArrayIdxOfParticleIdxForX(particleIndex)] = generateRandomXZInRange();
-	positions[getArrayIdxOfParticleIdxForY(particleIndex)] = generateRandomYInRange();
-	positions[getArrayIdxOfParticleIdxForZ(particleIndex)] = generateRandomXZInRange();
+	RS_positions[getArrayIdxOfParticleIdxForX(particleIndex)] = generateRandomXZInRange();
+	RS_positions[getArrayIdxOfParticleIdxForY(particleIndex)] = generateRandomYInRange();
+	RS_positions[getArrayIdxOfParticleIdxForZ(particleIndex)] = generateRandomXZInRange();
 }
 
 // Returns a random number between 0 and 1
