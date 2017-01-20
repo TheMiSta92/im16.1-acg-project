@@ -1,1 +1,1 @@
-const char * logl_root = "D:/Clouds/Git/im16.1-acg-project/RainyNight";
+const char * logl_root = "D:/Clouds/Git/im16.1-acg-project/RainyNight_Camera_ParticleEffect_AnimatedWaterEffect";
