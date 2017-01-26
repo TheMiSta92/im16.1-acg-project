@@ -119,7 +119,7 @@ int main()
 
 		// FPS
 		float fps = 1.0f / deltaTime;
-		//cout << fps << " FPS" << endl;
+		cout << fps << " FPS" << endl;
 
 		// Check and call events
 		glfwPollEvents();
@@ -132,7 +132,7 @@ int main()
 		doScriptedCameraMovement(currentFrame);
 		projectionMatrix = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		viewMatrix = camera.GetViewMatrix();
-	
+
 		// Draw Models
 		shaderSimpleGreen.Use();
 		drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
@@ -161,10 +161,10 @@ int main()
 		animatedWaterSystem->updateSwinging(deltaTime);
 		animatedWaterSystem->drawWater(shaderSimpleBlue, projectionMatrix, viewMatrix);
 
-		// RainSystem
+		// RainSystem	
 		shaderRain.Use();
 		rainSystem->updateParticles(deltaTime);
-		rainSystem->drawParticles(shaderSimpleBlue, projectionMatrix, viewMatrix);
+		rainSystem->drawParticles(shaderRain, projectionMatrix, viewMatrix);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

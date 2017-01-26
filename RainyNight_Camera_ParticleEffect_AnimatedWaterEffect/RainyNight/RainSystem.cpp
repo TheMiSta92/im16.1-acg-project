@@ -21,14 +21,15 @@ const GLfloat START_XZ_DIFF_MAX = 20.0f;
 const GLfloat START_Y_MIN = 3.0f;
 const GLfloat START_Y_DIFF_MAX = 2.0f;
 const GLfloat END_Y = -1.0f;
-const GLfloat VELOCITY = 2.0f;
+const GLfloat VELOCITY = 10.0f;
 const GLuint PRECISION = 10000;
-const GLuint PARTICLES_AMOUNT = 5000;
+const GLuint PARTICLES_AMOUNT = 3000;
 
 // Particles
 std::vector<GLfloat> RS_positions;
 GLuint RS_vertex_buffer_id;
 GLuint RS_positions_buffer_id;
+GLuint RS_vao;
 
 RainSystem::RainSystem() {
 	// Fill array with particles
@@ -67,6 +68,11 @@ void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::m
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
+	// Positions buffer
+	glGenBuffers(1, &RS_positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_positions_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, PARTICLES_AMOUNT * 3 * sizeof(GLfloat), RS_positions.data(), GL_STREAM_DRAW);
+
 	// 0th buffer - vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, RS_vertex_buffer_id);
@@ -83,6 +89,10 @@ void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::m
 	
 	// Draw
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, PARTICLES_AMOUNT);
+
+	// Free-ing
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 // Destroy RainSystem
@@ -126,11 +136,15 @@ RainSystem::~RainSystem() {
 void RainSystem::bindData() {
 	// Vertices of rain-drops
 	static const GLfloat vertex_buffer_data[] = {
-		-0.1f, -0.3f, 0.0f,
-		0.1f, -0.3f, 0.0f,
-		-0.1f, 0.3f, 0.0f,
-		0.1f, 0.3f, 0.0f
+		-0.004f, -0.02f, 0.0f,
+		0.004f, -0.02f, 0.0f,
+		-0.004f, 0.02f, 0.0f,
+		0.004f, 0.02f, 0.0f
 	};
+
+	// VAO
+	glGenVertexArrays(1, &RS_vao);
+	glBindVertexArray(RS_vao);
 
 	// Vertices buffer
 	glGenBuffers(1, &RS_vertex_buffer_id);

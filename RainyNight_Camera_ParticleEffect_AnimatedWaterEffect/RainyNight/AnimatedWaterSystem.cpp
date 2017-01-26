@@ -43,6 +43,7 @@ std::vector<GLfloat> AW_positions;
 std::vector<GLfloat> AW_swinging_time;	// used for animating swinging of vertices
 GLuint AW_geometry_buffer_id;
 GLuint AW_positions_buffer_id;
+GLuint AW_vao;
 
 AnimatedWaterSystem::AnimatedWaterSystem() {
 	generateSubPlanesPositions();
@@ -80,6 +81,11 @@ void AnimatedWaterSystem::drawWater(Shader shader, glm::mat4 projectionMatrix, g
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
+	// Positions buffer
+	glGenBuffers(1, &AW_positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, AW_positions_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, AMOUNT_EDGE * AMOUNT_EDGE * 3 * sizeof(GLfloat), AW_positions.data(), GL_STREAM_DRAW);
+
 	// 0th buffer - vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, AW_geometry_buffer_id);
@@ -96,6 +102,10 @@ void AnimatedWaterSystem::drawWater(Shader shader, glm::mat4 projectionMatrix, g
 
 	// Draw
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, AMOUNT_EDGE * AMOUNT_EDGE);
+
+	// Free-ing
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
 
 AnimatedWaterSystem::~AnimatedWaterSystem() {
@@ -117,6 +127,10 @@ void AnimatedWaterSystem::generateSubPlanesPositions() {
 }
 
 void AnimatedWaterSystem::bindData() {
+	// VAO
+	glGenVertexArrays(1, &AW_vao);
+	glBindVertexArray(AW_vao);
+
 	// Vertices buffer
 	glGenBuffers(1, &AW_geometry_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, AW_geometry_buffer_id);

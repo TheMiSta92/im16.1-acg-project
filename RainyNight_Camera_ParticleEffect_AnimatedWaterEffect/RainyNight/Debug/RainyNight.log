@@ -1,2 +1,6 @@
-﻿  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.exe
+﻿  main.cpp
+d:\clouds\git\im16.1-acg-project\rainynight_camera_particleeffect_animatedwatereffect\rainynight\main.cpp(116): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+  AnimatedWaterSystem.cpp
+  Generating Code...
+  RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.exe
   RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.pdb (Partial PDB)
