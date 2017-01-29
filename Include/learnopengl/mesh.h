@@ -54,6 +54,8 @@ public:
     // Render the mesh
     void Draw(Shader shader) 
     {
+		glEnable(GL_TEXTURE_2D);
+
         // Bind appropriate textures
         GLuint diffuseNr = 1;
         GLuint specularNr = 1;
@@ -61,7 +63,7 @@ public:
         GLuint heightNr = 1;
         for(GLuint i = 0; i < this->textures.size(); i++)
         {
-            glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
+			glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
             // Retrieve texture number (the N in diffuse_textureN)
             stringstream ss;
             string number;
@@ -87,10 +89,11 @@ public:
         glBindVertexArray(0);
 
         // Always good practice to set everything back to defaults once configured.
-        for (GLuint i = 0; i < this->textures.size(); i++)
+		for (GLuint i = 0; i < this->textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, 0);
+			glDisable(GL_TEXTURE_2D);
         }
     }
 

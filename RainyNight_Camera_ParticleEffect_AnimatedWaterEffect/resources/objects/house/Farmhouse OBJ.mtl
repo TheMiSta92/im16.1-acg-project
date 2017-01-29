@@ -9,5 +9,4 @@ Tf 1.00 1.00 1.00
 
 map_Kd Farmhouse Texture.jpg
 
-bump Farmhouse Texture Bump Map .jpg -bm 0.012
-Ni 1.00
+bump Farmhouse Texture Bump Map .jpg

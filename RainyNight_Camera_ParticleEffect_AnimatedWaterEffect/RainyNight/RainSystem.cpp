@@ -50,7 +50,7 @@ void RainSystem::updateParticles(float deltaTime) {
 
 			// showing that it's working
 			if (particleIdx == 0) {
-				std::cout << "Rain-Drop #0: y = " << RS_positions[getArrayIdxOfParticleIdxForY(0)] << std::endl;
+				//std::cout << "Rain-Drop #0: y = " << RS_positions[getArrayIdxOfParticleIdxForY(0)] << std::endl;
 			}
 		}
 		else {

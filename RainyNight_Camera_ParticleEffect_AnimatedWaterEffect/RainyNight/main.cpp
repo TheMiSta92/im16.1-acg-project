@@ -60,6 +60,14 @@ glm::mat4 viewMatrix = glm::mat4();
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
+// Testmode
+enum Testmode {
+	Models,
+	Effects,
+	Both
+};
+Testmode testmode;
+
 
 int main()
 {
@@ -91,7 +99,7 @@ int main()
 
 	// Setup and compile shaders
 	Shader shaderSimpleGreen = loadShader("simple_green");
-	Shader shaderSimpleBlue = loadShader("simple_blue");
+	Shader shaderWater = loadShader("water");
 	Shader shaderTexture = loadShader("texture");
 	Shader shaderRain = loadShader("rain");
 
@@ -105,9 +113,13 @@ int main()
 
 	// Initialize AnimatedWater
 	AnimatedWaterSystem *animatedWaterSystem = new AnimatedWaterSystem();
+	GLfloat lastWaterSwing = 0.0f;
 
-	// Make Water Swing
-	animatedWaterSystem->startSwinging(0, 0);
+	//******** Select Testmode **********
+	testmode = Testmode::Effects;
+	//testmode = Testmode::Models;
+	//testmode = Testmode::Both;
+	//***********************************
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -119,7 +131,7 @@ int main()
 
 		// FPS
 		float fps = 1.0f / deltaTime;
-		cout << fps << " FPS" << endl;
+		//cout << fps << " FPS" << endl;
 
 		// Check and call events
 		glfwPollEvents();
@@ -133,41 +145,54 @@ int main()
 		projectionMatrix = glm::perspective(camera.Zoom, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		viewMatrix = camera.GetViewMatrix();
 
-		// Draw Models
-		shaderSimpleGreen.Use();
-		drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
-		shaderTexture.Use();
-		drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, -0.02f, 0.0f), glm::vec3(0.0f, 200.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(0.0f, -0.03f, 2.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(1.0f, -0.03f, 2.5f), glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		if (testmode == Testmode::Effects || testmode == Testmode::Both) {
+			// AnimatedWaterSystem
+			if (currentFrame >= lastWaterSwing + 6.0f) {
+				animatedWaterSystem->startSwinging(0, 0);
+				lastWaterSwing = currentFrame;
+			}
+			animatedWaterSystem->updateSwinging(deltaTime);
+			glUseProgram(shaderWater.Program);
+			animatedWaterSystem->drawWater(shaderWater, projectionMatrix, viewMatrix);
 
-		// Pond
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.05f, -1.1f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.08f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.25f, -0.045f, -1.2f), glm::vec3(0.0f, 130.0f, 5.0f), glm::vec3(0.09f, 0.09f, 0.09f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.03f, -1.15f), glm::vec3(30.0f, 170.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-1.88f, -0.03f, -1.05f), glm::vec3(10.0f, 70.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-1.82f, -0.03f, -0.9f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.037f, -0.72f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.04f, -0.50f), glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-1.85f, -0.045f, -0.30f), glm::vec3(0.0f, 210.0f, 0.0f), glm::vec3(0.065f, 0.065f, 0.065f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.035f, -0.28f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.09f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.15f, -0.03f, -0.32f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.3f, -0.025f, -0.5f), glm::vec3(0.0f, 60.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.03f, -0.7f), glm::vec3(0.0f, 150.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.07f));
-		drawModel(modelRock, shaderTexture, glm::vec3(-2.52f, -0.01f, -0.95f), glm::vec3(0.0f, 250.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+			// RainSystem	
+			rainSystem->updateParticles(deltaTime);
+			glUseProgram(shaderRain.Program);
+			rainSystem->drawParticles(shaderRain, projectionMatrix, viewMatrix);
+		}
 
-		// AnimatedWaterSystem
-		shaderSimpleBlue.Use();
-		animatedWaterSystem->updateSwinging(deltaTime);
-		animatedWaterSystem->drawWater(shaderSimpleBlue, projectionMatrix, viewMatrix);
+		if (testmode == Testmode::Models || testmode == Testmode::Both) {
+			// Draw Terrain
+			glUseProgram(shaderSimpleGreen.Program);
+			drawModel(modelTerrain, shaderSimpleGreen, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 
-		// RainSystem	
-		shaderRain.Use();
-		rainSystem->updateParticles(deltaTime);
-		rainSystem->drawParticles(shaderRain, projectionMatrix, viewMatrix);
+			// Draw House
+			glUseProgram(shaderTexture.Program);
+			drawModel(modelHouse, shaderTexture, glm::vec3(0.0f, -0.02f, 0.0f), glm::vec3(0.0f, 200.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+
+			// Draw Rocks
+			drawModel(modelRock, shaderTexture, glm::vec3(0.0f, -0.03f, 2.0f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+			drawModel(modelRock, shaderTexture, glm::vec3(1.0f, -0.03f, 2.5f), glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+
+			// Draw Pond
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.05f, -1.1f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.08f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.25f, -0.045f, -1.2f), glm::vec3(0.0f, 130.0f, 5.0f), glm::vec3(0.09f, 0.09f, 0.09f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.03f, -1.15f), glm::vec3(30.0f, 170.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-1.88f, -0.03f, -1.05f), glm::vec3(10.0f, 70.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-1.82f, -0.03f, -0.9f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.037f, -0.72f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.05f, 0.05f, 0.05f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-1.80f, -0.04f, -0.50f), glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-1.85f, -0.045f, -0.30f), glm::vec3(0.0f, 210.0f, 0.0f), glm::vec3(0.065f, 0.065f, 0.065f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.05f, -0.035f, -0.28f), glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.09f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.15f, -0.03f, -0.32f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.3f, -0.025f, -0.5f), glm::vec3(0.0f, 60.0f, 0.0f), glm::vec3(0.07f, 0.07f, 0.07f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.45f, -0.03f, -0.7f), glm::vec3(0.0f, 150.0f, 0.0f), glm::vec3(0.08f, 0.08f, 0.07f));
+			drawModel(modelRock, shaderTexture, glm::vec3(-2.52f, -0.01f, -0.95f), glm::vec3(0.0f, 250.0f, 0.0f), glm::vec3(0.06f, 0.06f, 0.06f));
+		}
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
+
 	}
 
 	glfwTerminate();

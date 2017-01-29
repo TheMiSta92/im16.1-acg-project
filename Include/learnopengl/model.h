@@ -39,8 +39,9 @@ public:
     // Draws the model, and thus all its meshes
     void Draw(Shader shader)
     {
-        for(GLuint i = 0; i < this->meshes.size(); i++)
-            this->meshes[i].Draw(shader);
+		for (GLuint i = 0; i < this->meshes.size(); i++) {
+			this->meshes[i].Draw(shader);
+		}
     }
     
 private:
