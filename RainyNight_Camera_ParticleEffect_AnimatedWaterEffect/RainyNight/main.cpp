@@ -52,8 +52,6 @@ void drawModel(Model model, Shader shader, glm::vec3 position, glm::vec3 rotatio
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 bool keys[1024];
-GLfloat lastX = 400, lastY = 300;
-bool firstMouse = true;
 glm::mat4 projectionMatrix = glm::mat4();
 glm::mat4 viewMatrix = glm::mat4();
 

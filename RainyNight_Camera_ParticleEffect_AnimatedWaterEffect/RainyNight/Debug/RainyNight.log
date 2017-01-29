@@ -1,4 +1,51 @@
-﻿  AnimatedWaterSystem.cpp
-d:\clouds\git\im16.1-acg-project\rainynight_camera_particleeffect_animatedwatereffect\rainynight\animatedwatersystem.cpp(69): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  main.cpp
+d:\clouds\git\im16.1-acg-project\rainynight_camera_particleeffect_animatedwatereffect\rainynight\main.cpp(126): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+  RainSystem.cpp
+  Generating Code...
+  LINK : D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.exe not found or not built by the last incremental link; performing full link
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewBindBuffer imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewBindBuffer imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewBufferData imported
+RainSystem.obj : warning LNK4217: locally defined symbol ___glewBufferData imported in function "public: void __thiscall RainSystem::drawParticles(class Shader,struct glm::tmat4x4<float,0>,struct glm::tmat4x4<float,0>)" (?drawParticles@RainSystem@@QAEXVShader@@U?$tmat4x4@M$0A@@glm@@1@Z)
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewGenBuffers imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewGenBuffers imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewDisableVertexAttribArray imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewDisableVertexAttribArray imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewEnableVertexAttribArray imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewEnableVertexAttribArray imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewGetUniformLocation imported
+RainSystem.obj : warning LNK4217: locally defined symbol ___glewGetUniformLocation imported in function "public: void __thiscall RainSystem::drawParticles(class Shader,struct glm::tmat4x4<float,0>,struct glm::tmat4x4<float,0>)" (?drawParticles@RainSystem@@QAEXVShader@@U?$tmat4x4@M$0A@@glm@@1@Z)
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewUniformMatrix4fv imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewUniformMatrix4fv imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewVertexAttribPointer imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewVertexAttribPointer imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewDrawArraysInstanced imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewDrawArraysInstanced imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewVertexAttribDivisor imported
+RainSystem.obj : warning LNK4217: locally defined symbol ___glewVertexAttribDivisor imported in function "public: float & __thiscall std::vector<float,class std::allocator<float> >::operator[](unsigned int)" (??A?$vector@MV?$allocator@M@std@@@std@@QAEAAMI@Z)
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewBindVertexArray imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewBindVertexArray imported
+AnimatedWaterSystem.obj : warning LNK4049: locally defined symbol ___glewGenVertexArrays imported
+RainSystem.obj : warning LNK4049: locally defined symbol ___glewGenVertexArrays imported
+SOIL.lib(image_DXT.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(image_DXT.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\vc110.pdb'; linking object as if no debug info
+SOIL.lib(image_helper.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(image_helper.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\vc110.pdb'; linking object as if no debug info
+SOIL.lib(SOIL.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(SOIL.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\vc110.pdb'; linking object as if no debug info
+SOIL.lib(stb_image_aug.obj) : warning LNK4099: PDB 'vc110.pdb' was not found with 'SOIL.lib(stb_image_aug.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\vc110.pdb'; linking object as if no debug info
+glfw3.lib(context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(context.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(init.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(input.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(input.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(monitor.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(vulkan.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(vulkan.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(window.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_init.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_joystick.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_joystick.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_monitor.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_time.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_time.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_tls.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_tls.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_window.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(wgl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(wgl_context.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(egl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(egl_context.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\glfw.pdb'; linking object as if no debug info
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\vc120.pdb'; linking object as if no debug info
   RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.exe
   RainyNight.vcxproj -> D:\Clouds\Git\im16.1-acg-project\RainyNight_Camera_ParticleEffect_AnimatedWaterEffect\Debug\RainyNight.pdb (Partial PDB)

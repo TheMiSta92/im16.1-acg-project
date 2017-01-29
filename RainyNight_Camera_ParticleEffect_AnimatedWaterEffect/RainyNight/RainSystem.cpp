@@ -25,8 +25,10 @@ const GLfloat VELOCITY = 10.0f;
 const GLuint PRECISION = 10000;
 const GLuint PARTICLES_AMOUNT = 3000;
 
-// Particles
+// Particle Array
 std::vector<GLfloat> RS_positions;
+
+// Buffer
 GLuint RS_vertex_buffer_id;
 GLuint RS_positions_buffer_id;
 GLuint RS_vao;
@@ -65,12 +67,13 @@ void RainSystem::updateParticles(float deltaTime) {
 // Draw the particles
 void RainSystem::drawParticles(Shader shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	// Uniforms
+	// Give camera information to shaders
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-	// Positions buffer
+	// Positions buffer (data)
 	glGenBuffers(1, &RS_positions_buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, RS_positions_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, RS_positions_buffer_id);			// fixed on shader
 	glBufferData(GL_ARRAY_BUFFER, PARTICLES_AMOUNT * 3 * sizeof(GLfloat), RS_positions.data(), GL_STREAM_DRAW);
 
 	// 0th buffer - vertices
@@ -105,36 +108,41 @@ RainSystem::~RainSystem() {
 	RS_positions.clear();
 }
 
-// Replaces dead particles and emitts new ones
-//void RainSystem::emittingParticles() {
-//	GLuint maxAmountNewParticles = 10;
-	// Adding new particles
-//	for (GLuint i = 0; i < maxAmountNewParticles; i++) {
-//		int deadParticleIndex = getFirstDeadParticle();
-		// Checks if there is a dead particle, then respawn it
-//		if (deadParticleIndex != -1) {
-//			renewParticle(deadParticleIndex);
-//		}
-//		else {
-//			return;
-//		}
-//	}
-//}
+// Second Attempt 
+// Just renew the first 10 dead particles.
+// Problem withg respawning later ones.
+// Explained in tutorials.
 
-// Returns first dead particle from array
-// If no dead particle found -> returns -1
-//int RainSystem::getFirstDeadParticle() {
-//	for (GLuint particleIdx = 0; particleIdx < max_particles; particleIdx++) {
-//		if (getArrayIdxOfParticleIdxForY(particleIdx) <= END_Y) {
-//			return particleIdx;
-//		}
-//	}
-//	return -1;
-//}
+	// Replaces dead particles and emitts new ones
+	//void RainSystem::emittingParticles() {
+	//	GLuint maxAmountNewParticles = 10;
+		// Adding new particles
+	//	for (GLuint i = 0; i < maxAmountNewParticles; i++) {
+	//		int deadParticleIndex = getFirstDeadParticle();
+			// Checks if there is a dead particle, then respawn it
+	//		if (deadParticleIndex != -1) {
+	//			renewParticle(deadParticleIndex);
+	//		}
+	//		else {
+	//			return;
+	//		}
+	//	}
+	//}
+
+	// Returns first dead particle from array
+	// If no dead particle found -> returns -1
+	//int RainSystem::getFirstDeadParticle() {
+	//	for (GLuint particleIdx = 0; particleIdx < max_particles; particleIdx++) {
+	//		if (getArrayIdxOfParticleIdxForY(particleIdx) <= END_Y) {
+	//			return particleIdx;
+	//		}
+	//	}
+	//	return -1;
+	//}
 
 // Binds data
 void RainSystem::bindData() {
-	// Vertices of rain-drops
+	// Vertices of rain-drops / look
 	static const GLfloat vertex_buffer_data[] = {
 		-0.004f, -0.02f, 0.0f,
 		0.004f, -0.02f, 0.0f,
